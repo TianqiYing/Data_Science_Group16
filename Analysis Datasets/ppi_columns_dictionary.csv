@@ -1,0 +1,5 @@
+column,definition,source
+ppi_input_yoy,"YoY % change of index: 'Inputs into production of Manufactured products' (PPI INDEX INPUT - C), excl. Climate Change Levy, 2015=100",ONS PPI statistical bulletin dataset (ppi.csv)
+ppi_output_yoy,"YoY % change of index: 'Manufactured products' output price index (PPI INDEX OUTPUT TOTAL - C), excl. Duty, 2015=100",ONS PPI statistical bulletin dataset (ppi.csv)
+ppi_import_yoy,"YoY % change of index: Import price index for Manufactured products (PPI INDEX IMPORT - C), 2015=100",ONS PPI statistical bulletin dataset (ppi.csv)
+ppi_export_yoy,"YoY % change of index: Export price index for Manufactured products (PPI INDEX EXPORT TOTAL - C), 2015=100",ONS PPI statistical bulletin dataset (ppi.csv)
