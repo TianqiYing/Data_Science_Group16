@@ -1,0 +1,59 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+# Load data
+df = pd.read_csv("master_table_v2_uk_inflation_war_baseline_with_ppi.csv")
+df["date"] = pd.to_datetime(df["date"])
+df = df.sort_values("date")
+
+# Variables
+y = df["cpih_yoy"]
+x = df["ppi_input_yoy"]
+
+# Lag (3 months)
+lag = 3
+df["ppi_lagged"] = x.shift(lag)
+
+# Clean data
+df_clean = df.dropna(subset=["cpih_yoy", "ppi_lagged"]).copy()
+
+# Regression
+window = 36
+betas = []
+dates = []
+
+for i in range(window, len(df_clean)):
+    subset = df_clean.iloc[i-window:i]
+    
+    X = sm.add_constant(subset["ppi_lagged"])
+    y_subset = subset["cpih_yoy"]
+    
+    model = sm.OLS(y_subset, X).fit()
+    
+    betas.append(model.params["ppi_lagged"])
+    dates.append(df_clean["date"].iloc[i])
+
+# Results dataframe
+df_beta = pd.DataFrame({
+    "date": dates,
+    "beta": betas
+})
+
+# Plot
+plt.figure(figsize=(10,5))
+plt.plot(df_beta["date"], df_beta["beta"], label="PPI Input → CPIH (Rolling β)")
+
+plt.axvline(pd.Timestamp("2022-02-01"), linestyle="--", label="Ukraine War")
+plt.axhline(0, linestyle="--")
+
+plt.title("Time-Varying Impact of Input Price Shocks on CPIH Inflation")
+plt.xlabel("Date")
+plt.ylabel("Coefficient (β)")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig("fig_time_varying_ppi_input_response.png", dpi=300)
+plt.show()
+
